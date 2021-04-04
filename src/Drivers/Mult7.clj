@@ -9,7 +9,6 @@
       method-signature "(I)I"
       eq-tests-filter [
                        (fn one-to-seven? [i]  (= 7 (invoke-method i method-name 1)))
-                       (fn two-to-fourteen? [i] (= 14 (invoke-method i method-name 2)))
                        (fn zero-untouched? [i]  (= 0 (invoke-method i method-name 0)))
                        (fn minus-one-to-minus-seven? [i]  (= -7 (invoke-method i method-name -1)))
                        (fn large-positive? [i]  (= 6223 (invoke-method i method-name 889)))

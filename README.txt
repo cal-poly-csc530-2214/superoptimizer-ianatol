@@ -1,40 +1,43 @@
-To get started with the superoptimiser: 
+After reading the Massalin paper, I wondered about superoptimization over higher level languages.
 
-1. Install Leinengen as per the instructions at https://github.com/technomancy/leiningen
+The idea of superoptimization only really makes sense for incredibly small programs though, and I noticed a lot of the cool examples from Massalin came from bit level trickiness.
 
-2. Make a working directory and from the shell, do (what you type in black, sample
-responses in grey):
+Eventually, I found a project that investigated superoptimization over the JVM bytecode instructions.
 
-$ git clone https://github.com/twhume/superoptimiser.git
-Cloning into 'superoptimiser'...
-remote: Counting objects: 1927, done.
-remote: Compressing objects: 100% (477/477), done.
-remote: Total 1927 (delta 1175), reused 1927 (delta 1175)
-Receiving objects: 100% (1927/1927), 6.50 MiB | 48 KiB/s, done.
-Resolving deltas: 100% (1175/1175), done.
+Here is a link to their paper and implementation: 
 
-$ cd superoptimiser/SuperOptimiser/
+ https://doi.org/10.1002/spe.2240
+ https://github.com/twhume/superoptimiser
 
-$ lein deps
-Copying 40 files to /private/tmp/superoptimiser/SuperOptimiser/lib
+I got it up and running and played around with their built-in methods, then implemented a couple of my own (Mult7, Numsig (inverse signum)) and observed the optimized versions.
 
-$ lein run -m Drivers.Identity
-Aug 22, 2012 8:15:02 AM sun.reflect.NativeMethodAccessorImpl invoke0 INFO: PASS IdentityTest.identity {:seq-num 0, :vars 1, :length 2, :code ((:iload_0) (:ireturn)), :jumps {}}
-"Elapsed time: 292.711 msecs"
-(nil)
+To implement new methods to be optimized, the following info is needed:
 
-That’s it; you’ve superoptimised the identity function and been shown a matching result.
-Now try other functions (though some may take a long time to run; edit the source code
-to define what length of sequence to search up to): Drivers.Abs, Drivers.Negate,
-Drivers.Min, Drivers.Max, or Drivers.Signum;
+  class-name - name of the class that will be generated for the method
+  method-name - name of the method to be optimized
+  method-signature - method signature, see https://www.cs.miami.edu/home/burt/reference/java/language_vm_specification.pdf
+  eq-tests-filter - tests that the method and optimized version must both pass to ensure equivalent behavior
+    examples: (fn one-to-seven? [i]  (= 7 (invoke-method i method-name 1)))
+              (fn zero-untouched? [i]  (= 0 (invoke-method i method-name 0)))
 
-It should then be easy to add code to superoptimise other target functions.  
+            
 
-You can find out more about the superoptimiser in my original dissertation, available at
+Here's some samples of runs of the superoptimizer:
 
-https://docs.google.com/file/d/0B_8w6H4BG5E_TmxwbkRKRnhUM0k/edit
+Identity
 
-Please feel free to comment or ask questions here.
+Ians-MacBook-Pro-4:SuperOptimiser Ian$ lein run -m Drivers.Identity
+Apr 04, 2021 9:07:20 AM jdk.internal.reflect.NativeMethodAccessorImpl invoke0
+INFO: PASS IdentityTest.identity {:seq-num 0, :vars 1, :length 2, :code ((:iload_0) (:ireturn)), :jumps {}}
+"Elapsed time: 128.928389 msecs"
 
-Tom Hume
-twhume@gmail.com
+Mult7
+
+Ians-MacBook-Pro-4:SuperOptimiser Ian$ lein run -m Drivers.Mult7
+Apr 04, 2021 10:50:41 AM jdk.internal.reflect.NativeMethodAccessorImpl invoke0
+INFO: PASS Mult7Test.Mult7 {:seq-num 3242, :vars 1, :length 4, :code ((:iload_0) (:bipush 7) (:imul) (:ireturn)), :jumps {}}
+"Elapsed time: 6377.110742 msecs"
+
+Numsig takes a very long time (since it's optimized version is 7 instructions long)
+
+
