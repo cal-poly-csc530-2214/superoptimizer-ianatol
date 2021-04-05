@@ -16,7 +16,7 @@ To implement new methods to be optimized, the following info is needed:
   class-name - name of the class that will be generated for the method
   method-name - name of the method to be optimized
   method-signature - method signature, see https://www.cs.miami.edu/home/burt/reference/java/language_vm_specification.pdf
-  eq-tests-filter - tests that the method and optimized version must both pass to ensure equivalent behavior
+  eq-tests-filter - tests that the optimized method must pass to ensure equivalent behavior
     examples: (fn one-to-seven? [i]  (= 7 (invoke-method i method-name 1)))
               (fn zero-untouched? [i]  (= 0 (invoke-method i method-name 0)))
 
@@ -40,4 +40,4 @@ INFO: PASS Mult7Test.Mult7 {:seq-num 3242, :vars 1, :length 4, :code ((:iload_0)
 
 Numsig takes a very long time because its optimized version is 7 instructions long
 As of the time of writing, the optimizer for numsig has been running for 6 hours and has generated 115M programs
-
+I eventually terminated the optimizer at ~700M solutions generated
