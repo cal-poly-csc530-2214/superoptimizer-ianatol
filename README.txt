@@ -38,6 +38,6 @@ Apr 04, 2021 10:50:41 AM jdk.internal.reflect.NativeMethodAccessorImpl invoke0
 INFO: PASS Mult7Test.Mult7 {:seq-num 3242, :vars 1, :length 4, :code ((:iload_0) (:bipush 7) (:imul) (:ireturn)), :jumps {}}
 "Elapsed time: 6377.110742 msecs"
 
-Numsig takes a very long time (since it's optimized version is 7 instructions long)
-
+Numsig takes a very long time because its optimized version is 7 instructions long
+As of the time of writing, the optimizer for numsig has been running for 6 hours and has generated 115M programs
 
